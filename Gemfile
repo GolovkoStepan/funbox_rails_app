@@ -12,6 +12,8 @@ gem 'sqlite3', '~> 1.4'
 gem 'turbolinks', '~> 5'
 gem 'webpacker', '~> 4.0'
 
+gem 'sidekiq'
+
 gem 'bootsnap', '>= 1.4.2', require: false
 gem "foreman", require: false
 
