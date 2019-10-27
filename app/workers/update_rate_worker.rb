@@ -3,8 +3,13 @@ class UpdateRateWorker
 
   def perform(name, count)
     ParseRateService.new.update_rate
-    rate = YamlService.new.get(:current_rate)
-    ActionCable.server.broadcast("web_rate_update_channel", content: rate)
-    UpdateRateWorker.perform_at(1.hour, "Update Rate", 1)
+    yaml_service = YamlService.new
+
+    unless yaml_service.get(:is_force)
+      rate = yaml_service.get(:current_rate)
+      ActionCable.server.broadcast("web_rate_update_channel", content: rate)
+    end
+
+    UpdateRateWorker.perform_at(1.minute, "Update Rate", 1)
   end
 end

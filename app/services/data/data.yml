@@ -1,5 +1,5 @@
 ---
 current_rate: '63,9966'
-force_rate: ''
-datetime_force_rate: ''
-is_force: false
+force_rate: '11111111111111111'
+force_end_datetime: 2019-10-27T15:35
+is_force: true
