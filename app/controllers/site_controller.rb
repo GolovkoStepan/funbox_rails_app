@@ -21,7 +21,7 @@ class SiteController < ApplicationController
     @yaml_service.put(:force_end_datetime, params[:force_end_datetime])
     @yaml_service.put(:is_force, true)
 
-    force_end_datetime = DateTime.parse(params[:force_end_datetime])
+    force_end_datetime = DateTime.parse("#{params[:force_end_datetime]}#{Time.zone.now.formatted_offset}")
     ActionCable.server.broadcast("web_rate_update_channel", content: params[:force_rate])
     ForceEndWorker.perform_at(force_end_datetime, "End force rate", 1)
 
