@@ -23,6 +23,10 @@ class SiteController < ApplicationController
 
     force_end_datetime = DateTime.parse("#{params[:force_end_datetime]}#{Time.zone.now.formatted_offset}")
     ActionCable.server.broadcast("web_rate_update_channel", content: params[:force_rate])
+
+    ss = Sidekiq::ScheduledSet.new
+    jobs = ss.scan("ForceEndWorker").select {|retri| retri.klass == 'ForceEndWorker' }
+    jobs.each(&:delete)
     ForceEndWorker.perform_at(force_end_datetime, "End force rate", 1)
 
     redirect_to admin_path

@@ -30,5 +30,5 @@ http://www.rbc.ru, и т.д.).
 
 Запуск:
 
-1) rake worker:update_rate
-2) foreman start -f Procfile.dev
+1) foreman start -f Procfile.dev
+2) rake worker:update_rate
