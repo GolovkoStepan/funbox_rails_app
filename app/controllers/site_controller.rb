@@ -1,5 +1,7 @@
 class SiteController < ApplicationController
 
+  http_basic_authenticate_with :name => "admin", :password => "123", only: :admin
+
   before_action :create_yaml_service
 
   def index
@@ -15,13 +17,14 @@ class SiteController < ApplicationController
     @force_end_datetime = @yaml_service.get(:force_end_datetime)
     @is_force = @yaml_service.get(:is_force)
 
+    flash[:notice] = nil
+
     if @is_force
       flash[:notice] = "Форсированное значение курса установлено на #{@force_rate} до #{DateTime.parse(@force_end_datetime).strftime("%d.%m.%Y %H:%M")}"
     end
   end
 
   def force_rate
-
     unless validate_params
       @yaml_service.put(:force_rate, Float(params[:force_rate]))
       @yaml_service.put(:force_end_datetime, params[:force_end_datetime])
@@ -33,6 +36,7 @@ class SiteController < ApplicationController
       ss = Sidekiq::ScheduledSet.new
       jobs = ss.scan("ForceEndWorker").select {|retri| retri.klass == 'ForceEndWorker' }
       jobs.each(&:delete)
+
       ForceEndWorker.perform_at(force_end_datetime, "End force rate", 1)
     end
 

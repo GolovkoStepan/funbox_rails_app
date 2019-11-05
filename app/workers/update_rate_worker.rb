@@ -10,6 +10,6 @@ class UpdateRateWorker
       ActionCable.server.broadcast("web_rate_update_channel", content: rate)
     end
 
-    UpdateRateWorker.perform_at(1.minute, "Update Rate", 1)
+    UpdateRateWorker.perform_at(1.hour, "Update Rate", 1)
   end
 end

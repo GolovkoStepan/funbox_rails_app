@@ -5,4 +5,6 @@ class SiteCommonsTest < ApplicationSystemTestCase
     visit root_path
     page.has_content?("Текущий курс доллара:")
   end
+
+
 end
