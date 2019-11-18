@@ -1,7 +1,5 @@
 class SiteController < ApplicationController
 
-  http_basic_authenticate_with :name => "admin", :password => "123", only: :admin
-
   before_action :create_yaml_service
 
   def index

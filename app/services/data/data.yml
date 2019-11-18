@@ -1,5 +1,5 @@
 ---
-current_rate: '63,2480'
-force_rate: 105.0
-force_end_datetime: 2019-11-05T22:08
-is_force: false
+current_rate: '63,7542'
+force_rate: 200.0
+force_end_datetime: 2019-11-18T15:50
+is_force: true
