@@ -2,7 +2,13 @@ class UpdateRateWorker
   include Sidekiq::Worker
 
   def perform(name, count)
-    ParseRateService.new.update_rate
+    begin
+      ParseRateService.new.update_rate
+    rescue SocketError
+      UpdateRateWorker.perform_at(5.minutes, "Update Rate", 1)
+      return
+    end
+
     yaml_service = YamlService.new
 
     unless yaml_service.get(:is_force)
@@ -10,6 +16,6 @@ class UpdateRateWorker
       ActionCable.server.broadcast("web_rate_update_channel", content: rate)
     end
 
-    UpdateRateWorker.perform_at(1.hour, "Update Rate", 1)
+    UpdateRateWorker.perform_at(1.hour', "Update Rate", 1)
   end
 end
