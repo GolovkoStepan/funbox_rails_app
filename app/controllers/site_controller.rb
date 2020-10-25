@@ -1,19 +1,17 @@
 class SiteController < ApplicationController
 
-  before_action :create_yaml_service
-
   def index
-    if @yaml_service.get(:is_force)
-      @current_rate = @yaml_service.get(:force_rate)
+    if yaml_service.get(:is_force)
+      @current_rate = yaml_service.get(:force_rate)
     else
-      @current_rate = @yaml_service.get(:current_rate)
+      @current_rate = yaml_service.get(:current_rate)
     end
   end
 
   def admin
-    @force_rate = @yaml_service.get(:force_rate)
-    @force_end_datetime = @yaml_service.get(:force_end_datetime)
-    @is_force = @yaml_service.get(:is_force)
+    @force_rate = yaml_service.get(:force_rate)
+    @force_end_datetime = yaml_service.get(:force_end_datetime)
+    @is_force = yaml_service.get(:is_force)
 
     flash[:notice] = nil
 
@@ -24,9 +22,9 @@ class SiteController < ApplicationController
 
   def force_rate
     unless validate_params
-      @yaml_service.put(:force_rate, Float(params[:force_rate]))
-      @yaml_service.put(:force_end_datetime, params[:force_end_datetime])
-      @yaml_service.put(:is_force, true)
+      yaml_service.put(:force_rate, Float(params[:force_rate]))
+      yaml_service.put(:force_end_datetime, params[:force_end_datetime])
+      yaml_service.put(:is_force, true)
 
       force_end_datetime = DateTime.parse("#{params[:force_end_datetime]}#{Time.zone.now.formatted_offset}")
       ActionCable.server.broadcast("web_rate_update_channel", content: params[:force_rate])
@@ -57,8 +55,8 @@ class SiteController < ApplicationController
     flash[:alert].present?
   end
 
-  def create_yaml_service
-    @yaml_service = YamlService.new
+  def yaml_service
+    @yaml_service ||= YamlService.new
   end
 
 end
