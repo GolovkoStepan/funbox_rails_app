@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'yaml'
 
 class YamlService
-
   DEFAULT_FILE_PATH = "#{Rails.root}/app/services/data/data.yml".freeze
 
   def initialize(path_to_file = DEFAULT_FILE_PATH)
@@ -28,5 +29,4 @@ class YamlService
   def reload
     @data = YAML.safe_load(File.read(@path_to_file))
   end
-
 end

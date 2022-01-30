@@ -1,11 +1,12 @@
-class SiteController < ApplicationController
+# frozen_string_literal: true
 
+class SiteController < ApplicationController
   def index
-    if yaml_service.get(:is_force)
-      @current_rate = yaml_service.get(:force_rate)
-    else
-      @current_rate = yaml_service.get(:current_rate)
-    end
+    @current_rate = if yaml_service.get(:is_force)
+                      yaml_service.get(:force_rate)
+                    else
+                      yaml_service.get(:current_rate)
+                    end
   end
 
   def admin
@@ -16,7 +17,8 @@ class SiteController < ApplicationController
     flash[:notice] = nil
 
     if @is_force
-      flash[:notice] = "Форсированное значение курса установлено на #{@force_rate} до #{DateTime.parse(@force_end_datetime).strftime("%d.%m.%Y %H:%M")}"
+      flash[:notice] =
+        "Форсированное значение курса установлено на #{@force_rate} до #{DateTime.parse(@force_end_datetime).strftime('%d.%m.%Y %H:%M')}"
     end
   end
 
@@ -27,13 +29,13 @@ class SiteController < ApplicationController
       yaml_service.put(:is_force, true)
 
       force_end_datetime = DateTime.parse("#{params[:force_end_datetime]}#{Time.zone.now.formatted_offset}")
-      ActionCable.server.broadcast("web_rate_update_channel", content: params[:force_rate])
+      ActionCable.server.broadcast('web_rate_update_channel', { content: params[:force_rate] })
 
       ss = Sidekiq::ScheduledSet.new
-      jobs = ss.scan("ForceEndWorker").select {|retri| retri.klass == 'ForceEndWorker' }
+      jobs = ss.scan('ForceEndWorker').select { |retri| retri.klass == 'ForceEndWorker' }
       jobs.each(&:delete)
 
-      ForceEndWorker.perform_at(force_end_datetime, "End force rate", 1)
+      ForceEndWorker.perform_at(force_end_datetime, 'End force rate', 1)
     end
 
     redirect_to admin_path
@@ -43,13 +45,13 @@ class SiteController < ApplicationController
 
   def validate_params
     if DateTime.parse("#{params[:force_end_datetime]}#{Time.zone.now.formatted_offset}") <= Time.zone.now
-      flash[:alert] = "Выбранная дата должна быть больше текущей."
+      flash[:alert] = 'Выбранная дата должна быть больше текущей.'
     end
 
     begin
       Float(params[:force_rate])
     rescue ArgumentError
-      flash[:alert] = "Значение курса должно быть числовым."
+      flash[:alert] = 'Значение курса должно быть числовым.'
     end
 
     flash[:alert].present?
@@ -58,5 +60,4 @@ class SiteController < ApplicationController
   def yaml_service
     @yaml_service ||= YamlService.new
   end
-
 end

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class WebRateUpdateChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "web_rate_update_channel"
+    stream_from 'web_rate_update_channel'
   end
 
   def unsubscribed

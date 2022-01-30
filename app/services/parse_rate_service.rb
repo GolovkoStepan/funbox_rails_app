@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'nokogiri'
 
 class ParseRateService
-
-  DEFAULT_URL = 'http://www.cbr.ru/currency_base/daily/'.freeze
+  DEFAULT_URL = 'http://www.cbr.ru/currency_base/daily/'
 
   def initialize(url = DEFAULT_URL)
     @html = open(url)
@@ -25,7 +26,6 @@ class ParseRateService
       end
     end
 
-    raise Exception, 'Parse failed. No needed content.'
+    raise StandardError, 'Parse failed. No needed content.'
   end
-
 end

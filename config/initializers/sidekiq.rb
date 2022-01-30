@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Sidekiq.configure_server do |config|
   config.redis = { url: 'redis://localhost:6379/funbox_rails_app_workers' }
 end
